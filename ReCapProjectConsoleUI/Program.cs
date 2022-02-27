@@ -1,5 +1,6 @@
 ﻿using Business.Concrete;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using System;
 
@@ -9,15 +10,10 @@ namespace ReCapProjectConsoleUI
     {
         static void Main(string[] args)
         {
-            CarManager carManager = new CarManager(new InMemoryCarDal());
-            foreach (var car in carManager.GetAll())
+            CarManager carManager = new CarManager(new EfCarDal());
+            foreach (var car in carManager.GetByDailyPrice(2500,12400))
             {
-                if (car.DailyPrice>5000)
-                {
-                    Console.WriteLine("Modeli : " + " " + car.Description);
-                    Console.WriteLine("Günlük Ücreti : " + " " + car.DailyPrice);
-                    Console.WriteLine("Model Tarihi : " + " " + car.ModelYear);
-                }
+                Console.WriteLine(car.Descriptions);
             }
         }
     }
