@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core1.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
@@ -18,34 +20,39 @@ namespace Business.Concrete
             _brandDal = brandDal;
         }
 
-        public void Add(Brand brand)
+        public IResult Add(Brand brand)
         {
-            using (NorthwindContext context = new NorthwindContext())
+            if (brand.BrandName.Length < 2)
             {
-                var addedEntity = context.Entry(brand);
-                addedEntity.State = EntityState.Added;
-                context.SaveChanges();
+                return new ErrorResult(Messages.BrandNameInValid);
             }
+            else
+            {
+                _brandDal.Add(brand);
+                return new SuccessResult(Messages.BrandAdded);
+            }
+
+        }
+        public IResult Delete(Brand brand)
+        {
+            _brandDal.Delete(brand);
+            return new SuccessResult(Messages.BrandDeleted);
         }
 
-        public void Delete(Brand brand)
+        public IDataResult<List<Brand>> GetAll()
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandListed);
         }
 
-        public List<Brand> GetAll()
+        public IDataResult<List<Brand>> GetAllByBrandId(int id)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(b => b.BrandId == id),Messages.BrandListed);
         }
 
-        public List<Brand> GetAllByBrandId(int id)
+        public IResult Update(Brand brand)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Brand brand)
-        {
-            throw new NotImplementedException();
+            _brandDal.Update(brand);
+            return new SuccessResult(Messages.BrandUpdated);
         }
     }
 }
