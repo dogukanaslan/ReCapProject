@@ -39,20 +39,21 @@ namespace Business.Concrete
             return new SuccessResult(Messages.BrandDeleted);
         }
 
-        public IDataResult<List<Brand>> GetAll()
-        {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandListed);
-        }
-
-        public IDataResult<List<Brand>> GetAllByBrandId(int id)
-        {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(b => b.BrandId == id),Messages.BrandListed);
-        }
-
         public IResult Update(Brand brand)
         {
             _brandDal.Update(brand);
             return new SuccessResult(Messages.BrandUpdated);
         }
+
+        public IDataResult<List<Brand>> GetAll()
+        {
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandListed);
+        }
+
+        public IDataResult<Brand> GetByBrandId(int brandId)
+        {
+            return new SuccessDataResult<Brand>(_brandDal.Get(b => b.BrandId == brandId),Messages.BrandListed);
+        }
+
     }
 }
