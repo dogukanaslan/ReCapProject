@@ -1,5 +1,11 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core1.Aspects.Autofac.Caching;
+using Core1.Aspects.Autofac.Performance;
+using Core1.Aspects.Autofac.Transaction;
+using Core1.Aspects.Autofac.Validation;
 using Core1.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
@@ -21,23 +27,37 @@ namespace Business.Concrete
         {
             _carDal = carDal;
         }
-
+        [SecuredOperation("admin")]
+        [ValidationAspect(typeof(CarValidator))]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Add(Car car)
         {
-            if (car.Descriptions.Length<2)
-            {
-                return new ErrorResult(Messages.CarNameInValid);
-            }
             _carDal.Add(car);
             return new SuccessResult(Messages.CarAdded);
         }
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Car car)
+        {
+            Add(car);
+            if (car.DailyPrice< 2000)
+            {
+                throw new Exception("");
+            }
+            Add(car);
 
+            return null;
+        }
+
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Delete(Car car)
         {
             _carDal.Delete(car);
             return new SuccessDataResult<Car>(Messages.CarDeleted);
         }
-
+        [PerformanceAspect(5)]
+        [SecuredOperation("admin")]
+        [CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
             //if (DateTime.Now.Hour == 15)
