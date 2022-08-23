@@ -11,8 +11,8 @@ namespace Business.ValidationRules.FluentValidation
         public CustomerValidator()
         {
             RuleFor(cu => cu.CompanyName).NotEmpty();
-            RuleFor(cu => cu.CustomerId).NotEmpty();
-            RuleFor(cu => cu.UserId).NotEmpty();
+            //RuleFor(cu => cu.CustomerId).NotEmpty();
+            //RuleFor(cu => cu.UserId).NotEmpty();
         }
     }
 }

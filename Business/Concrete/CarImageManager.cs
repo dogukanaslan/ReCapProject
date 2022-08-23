@@ -26,11 +26,14 @@ namespace Business.Concrete
         public IResult Add(IFormFile file, CarImage carImage)
         {
             IResult result = BusinessRules.Run(CheckIfImageCountOfCar(carImage.CarId));
-
+            if (result != null)
+            {
+                return result;
+            }
             carImage.ImagePath = _fileHelper.Upload(file, PathConstant.ImagesPath);
             carImage.ImageDate = DateTime.Now;
             _carImageDal.Add(carImage);
-            return new SuccessResult("Resim başarıyla yüklendi");
+            return new SuccessResult("Picture Upload Succesfully");
         }
 
         public IResult Delete(CarImage carImage)

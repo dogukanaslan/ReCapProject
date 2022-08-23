@@ -17,9 +17,13 @@ namespace Core1.Utilities.Helpers.FileHelper
             }
         }
 
-        public string Update(IFormFile file, string flePath, string root)
+        public string Update(IFormFile file, string filePath, string root)
         {
-            throw new NotImplementedException();
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+            return Upload(file, root); ;
         }
 
         public string Upload(IFormFile file, string root)
@@ -30,17 +34,17 @@ namespace Core1.Utilities.Helpers.FileHelper
                 {
                     Directory.CreateDirectory(root);
                 }
-            }
 
-            string extension = Path.GetExtension(file.FileName);
-            string guid = GuidHelper.CreateGuid();
-            string filePath = guid + extension;
+                string extension = Path.GetExtension(file.FileName);
+                string guid = GuidHelper.CreateGuid();
+                string filePath = guid + extension;
 
-            using (FileStream fileStream = File.Create(root + filePath))
-            {
-                file.CopyTo(fileStream);
-                fileStream.Flush();
-                return filePath;
+                using (FileStream fileStream = File.Create(root + filePath))
+                {
+                    file.CopyTo(fileStream);
+                    fileStream.Flush();
+                    return filePath;
+                }
             }
             return null;
         }
